@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔克 Blog - Star Citizen 繁中新手指南</title>
+    <meta name="description" content="記錄 Star Citizen 中文指南網站的更新狀態、開發心得與星際公民日常。">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Blog Specific Styles */
+        .blog-header {
+            margin-bottom: 40px;
+        }
+        
+        .blog-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(0, 210, 255, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(5, 11, 20, 0.6);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 10px 15px;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+        }
+
+        /* Post Cards */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .post-card {
+            padding: 30px;
+            border-left: 5px solid var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 210, 255, 0.15);
+            border-color: var(--primary) !important;
+        }
+
+        /* Category Borders */
+        .post-card.cat-update { border-left-color: var(--primary); } /* 📢 網站更新 */
+        .post-card.cat-mind { border-left-color: #a855f7; } /* 💡 心得隨筆 */
+        .post-card.cat-game { border-left-color: #f97316; } /* 🎮 遊戲日常 */
+        .post-card.cat-bug { border-left-color: #10b981; }  /* 🛠️ Bug 修復 */
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .post-category-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .badge-update { background: rgba(0, 210, 255, 0.2); border: 1px solid var(--primary); color: var(--primary); }
+        .badge-mind { background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #c084fc; }
+        .badge-game { background: rgba(249, 115, 22, 0.2); border: 1px solid #f97316; color: #fb923c; }
+        .badge-bug { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #34d399; }
+
+        .post-title {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        .post-content p {
+            margin-bottom: 12px;
+        }
+
+        .post-content ul, .post-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .post-content li {
+            margin-bottom: 5px;
+        }
+
+        .post-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: var(--primary);
+        }
+
+        .post-content pre {
+            background: rgba(5, 11, 20, 0.8);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+
+        .post-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        /* Editor Modal/Panel */
+        .editor-panel {
+            margin-bottom: 30px;
+            padding: 30px;
+            border: 1px dashed var(--primary);
+            display: none;
+        }
+
+        .editor-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(5, 11, 20, 0.8);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 12px 15px;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .editor-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .editor-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Markdown Help */
+        .md-help {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .md-help span {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        .delete-btn:hover {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        body.manage-active .delete-btn {
+            display: block;
+        }
+
+        /* Export block */
+        .export-section {
+            margin-top: 20px;
+            background: rgba(5, 11, 20, 0.9);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        /* Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .no-posts {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            border: 1px dashed var(--glass-border);
+            border-radius: 12px;
+        }
+
+        .live-preview {
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="index.html" style="color: var(--accent); display: flex; align-items: center; gap: 8px;">
+                <span>←</span> 返回首頁
+            </a>
+            <button id="toggle-manage-btn" class="btn" style="background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 8px 16px; font-size: 0.85rem;">
+                ⚙️ 開發者管理模式
+            </button>
+        </div>
+
+        <section class="hero glass-panel blog-header">
+            <h1><span class="text-gradient">塔克 Blog</span></h1>
+            <p>在這裡記錄網站的更新狀態、日誌心得以及星際公民遊戲中的冒險點滴。</p>
+        </section>
+
+        <!-- Management Panel -->
+        <section id="editor-panel" class="glass-panel editor-panel">
+            <h2 class="text-gradient" style="font-size: 1.5rem; margin-bottom: 20px;">📝 撰寫新文章</h2>
+            
+            <div id="editor-info-banner" style="background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; color: var(--text-main);">
+                💡 <strong>提示：</strong> 這是一個本機發布面板。您在此處發布的文章將會暫存於瀏覽器的 <code>localStorage</code> 中。
+                若要永久發布至伺服器，請填寫好內容並點擊下方<strong>「匯出代碼」</strong>，然後將代碼貼入本 HTML 檔案中。
+            </div>
+
+            <form id="post-form">
+                <div class="form-group">
+                    <label class="form-label" for="post-title">文章標題</label>
+                    <input type="text" id="post-title" class="form-control" placeholder="請輸入文章標題..." required>
+                </div>
+
+                <div class="editor-row">
+                    <div class="form-group">
+                        <label class="form-label" for="post-category">文章分類</label>
+                        <select id="post-category" class="form-control">
+                            <option value="update">📢 網站更新</option>
+                            <option value="mind">💡 心得隨筆</option>
+                            <option value="game">🎮 遊戲日常</option>
+                            <option value="bug">🛠️ Bug 修復</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="post-date">發布日期</label>
+                        <input type="date" id="post-date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="post-content">文章內容 (支援 Markdown 格式)</label>
+                    <textarea id="post-content" class="form-control" placeholder="輸入內容..." required></textarea>
+                    <div class="md-help">
+                        <span>粗體：**文字**</span>
+                        <span>斜體：*文字*</span>
+                        <span>連結：[連結名稱](URL)</span>
+                        <span>程式碼：`code`</span>
+                        <span>列表：- 項目</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">內容即時預覽</label>
+                    <div id="preview-area" class="live-preview post-content">
+                        <span style="color: var(--text-muted); font-style: italic;">請在上方輸入內容以預覽...</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="submit" class="btn">🚀 發布文章</button>
+                    <button type="button" id="export-btn" class="btn" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main);">
+                        💾 匯出代碼
+                    </button>
+                    <button type="button" id="clear-cache-btn" class="btn" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; margin-left: auto;">
+                        🗑️ 清除暫存
+                    </button>
+                </div>
+            </form>
+
+            <div id="export-wrapper" class="export-section" style="display: none; margin-top: 20px;">
+                <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">複製下方代碼</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+                    請將以下 JavaScript 代碼區塊完整複製，並覆蓋 `blog.html` 中約第 390 行開始的 <code>STATIC_POSTS</code> 變數，即可永久保存！
+                </p>
+                <textarea id="export-code" class="form-control" style="font-family: monospace; font-size: 0.85rem; min-height: 150px; background: #020617; border-color: var(--primary);" readonly></textarea>
+                <button id="copy-code-btn" class="btn" style="margin-top: 10px; padding: 6px 15px; font-size: 0.8rem;">📋 複製到剪貼簿</button>
+            </div>
+        </section>
+
+        <!-- Filters and Search -->
+        <div class="blog-controls">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">全部文章</button>
+                <button class="filter-btn" data-category="update">📢 網站更新</button>
+                <button class="filter-btn" data-category="mind">💡 心得隨筆</button>
+                <button class="filter-btn" data-category="game">🎮 遊戲日常</button>
+                <button class="filter-btn" data-category="bug">🛠️ Bug 修復</button>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋文章標題或內容...">
+            </div>
+        </div>
+
+        <!-- Post List Container -->
+        <div id="post-list" class="post-list">
+            <!-- Posts will be generated by JS -->
+        </div>
+
+    </main>
+
+    <script src="components.js"></script>
+    <script>
+        // --- 靜態文章資料區 ---
+        // 當您在此頁面中新增/修改並匯出代碼後，請將產生的陣列貼在下方覆蓋 STATIC_POSTS
+        const STATIC_POSTS = [
+            {
+                id: "static-1",
+                title: "星際公民中文新手指南網站上線！",
+                date: "2026-05-25",
+                category: "update",
+                content: "歡迎來到由玩家維護的 **Star Citizen 繁體中文新手指南**。\n\n目前我們已經整理了以下幾個核心單元：\n- 🚀 [基礎飛行](first-flight.html)：從起飛到降落的完整操作\n- 💼 [專業領域](professions.html)：探索貨運、挖礦、地面戰鬥\n- 🌎 [世界介紹](world-intro.html)：Stanton 及其他星系的概況\n- 🚢 [飛機購買指南](ship-purchase-guide.html)：針對不同定位的飛船推薦\n\n這是一個純靜態網頁專案，感謝所有玩家的建議！未來我們將持續更新改版資訊。如果你對網站有任何建議，歡迎與我分享！\n\n*See You In The 'Verse! o7*"
+            },
+            {
+                id: "static-2",
+                title: "關於 Stanton 星系貨運玩法的開發心得",
+                date: "2026-05-24",
+                category: "mind",
+                content: "在製作貨運指南時，我發現最新的貨運系統有了相當巨大的變化。\n\n現在的貨物需要進入貨運電梯，並使用牽引光束（Tractor Beam）進行物理手動裝卸。這雖然大大增加了沉浸感，但也讓很多習慣以往一鍵買賣的新手玩家感到困惑。\n\n這也是我決定要製作一個更易懂的繁體中文教學的原因，特別是針對 `SCU` 規格的解說，希望大家在遊玩時能少走一些彎路。\n\n之後我打算多寫一點關於不同飛船手感的測評，有興趣的可以期待一下！"
+            }
+        ];
+
+        // --- 部落格核心 Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // 設定今日日期為預設值
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('post-date').value = today;
+
+            // 讀取本地儲存的文章 (localStorage)
+            let localPosts = [];
+            try {
+                const stored = localStorage.getItem('taku_blog_posts');
+                if (stored) {
+                    localPosts = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error("無法讀取 LocalStorage", e);
+            }
+
+            // 合併文章並依日期降序排列
+            let allPosts = [...localPosts, ...STATIC_POSTS];
+            sortPosts();
+
+            // 渲染文章
+            renderPosts();
+
+            // 編輯模式切換
+            const toggleManageBtn = document.getElementById('toggle-manage-btn');
+            const editorPanel = document.getElementById('editor-panel');
+            toggleManageBtn.addEventListener('click', () => {
+                const isActive = editorPanel.classList.toggle('active');
+                document.body.classList.toggle('manage-active');
+                if (isActive) {
+                    toggleManageBtn.textContent = '👁️ 關閉管理模式';
+                    updateExportCode();
+                } else {
+                    toggleManageBtn.textContent = '⚙️ 開發者管理模式';
+                }
+            });
+
+            // 即時預覽功能
+            const contentTextarea = document.getElementById('post-content');
+            const previewArea = document.getElementById('preview-area');
+            contentTextarea.addEventListener('input', () => {
+                const val = contentTextarea.value;
+                if (!val) {
+                    previewArea.innerHTML = '<span style="color: var(--text-muted); font-style: italic;">請在上方輸入內容以預覽...</span>';
+                } else {
+                    previewArea.innerHTML = parseMarkdown(val);
+                }
+            });
+
+            // 發布文章
+            const postForm = document.getElementById('post-form');
+            postForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('post-title').value.trim();
+                const category = document.getElementById('post-category').value;
+                const date = document.getElementById('post-date').value;
+                const content = document.getElementById('post-content').value;
+
+                if (!title || !content) return;
+
+                const newPost = {
+                    id: 'local-' + Date.now(),
+                    title,
+                    category,
+                    date,
+                    content
+                };
+
+                localPosts.unshift(newPost);
+                saveLocalPosts();
+                
+                // 重設表單
+                document.getElementById('post-title').value = '';
+                document.getElementById('post-content').value = '';
+                document.getElementById('post-date').value = today;
+                previewArea.innerHTML = '<span style="color: var(--text-muted); font-style: italic;">請在上方輸入內容以預覽...</span>';
+
+                // 更新合併列表並渲染
+                allPosts = [...localPosts, ...STATIC_POSTS];
+                sortPosts();
+                renderPosts();
+                updateExportCode();
+                
+                alert('文章已暫存！如需永久儲存，請點擊「匯出代碼」並將代碼貼入 blog.html 檔案中。');
+            });
+
+            // 匯出代碼按鈕
+            const exportBtn = document.getElementById('export-btn');
+            const exportWrapper = document.getElementById('export-wrapper');
+            exportBtn.addEventListener('click', () => {
+                const isVisible = exportWrapper.style.display === 'block';
+                exportWrapper.style.display = isVisible ? 'none' : 'block';
+                if (!isVisible) {
+                    updateExportCode();
+                    exportWrapper.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            // 複製代碼按鈕
+            const copyCodeBtn = document.getElementById('copy-code-btn');
+            copyCodeBtn.addEventListener('click', () => {
+                const codeArea = document.getElementById('export-code');
+                codeArea.select();
+                document.execCommand('copy');
+                alert('代碼已複製到剪貼簿！');
+            });
+
+            // 清除暫存按鈕
+            const clearCacheBtn = document.getElementById('clear-cache-btn');
+            clearCacheBtn.addEventListener('click', () => {
+                if (confirm('確定要清除所有在瀏覽器中暫存的文章嗎？（這不會影響寫死在程式碼中的靜態文章）')) {
+                    localStorage.removeItem('taku_blog_posts');
+                    localPosts = [];
+                    allPosts = [...STATIC_POSTS];
+                    renderPosts();
+                    updateExportCode();
+                }
+            });
+
+            // 搜尋與篩選功能
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', filterAndRender);
+
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filterAndRender();
+                });
+            });
+
+            // 刪除文章事件委派 (管理模式下)
+            const postListContainer = document.getElementById('post-list');
+            postListContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('delete-btn')) {
+                    const postId = e.target.getAttribute('data-id');
+                    if (postId.startsWith('static-')) {
+                        alert('這篇文章是寫死在程式碼中的靜態文章，無法直接刪除。若要刪除，請直接編輯 blog.html 檔案刪除對應的 STATIC_POSTS 項目。');
+                        return;
+                    }
+                    if (confirm('確定要刪除這篇暫存文章嗎？')) {
+                        localPosts = localPosts.filter(p => p.id !== postId);
+                        saveLocalPosts();
+                        allPosts = [...localPosts, ...STATIC_POSTS];
+                        sortPosts();
+                        renderPosts();
+                        updateExportCode();
+                    }
+                }
+            });
+
+            // --- 輔助函式 ---
+            function sortPosts() {
+                allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            }
+
+            function saveLocalPosts() {
+                try {
+                    localStorage.setItem('taku_blog_posts', JSON.stringify(localPosts));
+                } catch (e) {
+                    console.error("無法寫入 LocalStorage", e);
+                }
+            }
+
+            function updateExportCode() {
+                const codeArea = document.getElementById('export-code');
+                // 將所有文章格式化輸出 (包含 static 與 local)
+                // 為了讓使用者直接替換，我們匯出整個 STATIC_POSTS
+                const exportArray = allPosts.map(p => {
+                    // 將 id 轉換，避免 local- 開頭的 id 重複或混淆，我們可以重新為所有文章編排 id
+                    const cleanId = p.id.startsWith('static-') ? p.id : 'static-' + Math.random().toString(36).substr(2, 9);
+                    return {
+                        id: cleanId,
+                        title: p.title,
+                        date: p.date,
+                        category: p.category,
+                        content: p.content
+                    };
+                });
+
+                codeArea.value = JSON.stringify(exportArray, null, 4);
+            }
+
+            function filterAndRender() {
+                const searchVal = searchInput.value.toLowerCase().trim();
+                const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-category');
+
+                const filtered = allPosts.filter(post => {
+                    const matchCategory = (activeFilter === 'all' || post.category === activeFilter);
+                    const matchSearch = (
+                        post.title.toLowerCase().includes(searchVal) ||
+                        post.content.toLowerCase().includes(searchVal)
+                    );
+                    return matchCategory && matchSearch;
+                });
+
+                renderFilteredPosts(filtered);
+            }
+
+            function renderPosts() {
+                renderFilteredPosts(allPosts);
+            }
+
+            function renderFilteredPosts(postsToRender) {
+                const container = document.getElementById('post-list');
+                container.innerHTML = '';
+
+                if (postsToRender.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-posts">
+                            <p>🔍 找不到相符的文章。快來寫點心得吧！</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                postsToRender.forEach(post => {
+                    const card = document.createElement('article');
+                    card.className = `post-card glass-panel cat-${post.category}`;
+                    
+                    const catNames = {
+                        update: '📢 網站更新',
+                        mind: '💡 心得隨筆',
+                        game: '🎮 遊戲日常',
+                        bug: '🛠️ Bug 修復'
+                    };
+
+                    const badgeClass = `badge-${post.category}`;
+                    const formattedContent = parseMarkdown(post.content);
+
+                    card.innerHTML = `
+                        <button class="delete-btn" data-id="${post.id}">🗑️ 刪除</button>
+                        <div class="post-meta">
+                            <span class="post-category-badge ${badgeClass}">${catNames[post.category] || post.category}</span>
+                            <time datetime="${post.date}">📅 ${post.date}</time>
+                        </div>
+                        <h2 class="post-title text-gradient">${escapeHtml(post.title)}</h2>
+                        <div class="post-content">
+                            ${formattedContent}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            // Line-based Markdown 轉換器
+            function parseMarkdown(text) {
+                if (!text) return '';
+                
+                const lines = text.split('\n');
+                let inList = false;
+                let result = [];
+
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i].trim();
+
+                    // Check for list item
+                    if (line.startsWith('- ')) {
+                        if (!inList) {
+                            result.push('<ul style="margin-left: 20px; margin-bottom: 15px; list-style-type: disc;">');
+                            inList = true;
+                        }
+                        const content = line.substring(2);
+                        result.push(`<li style="margin-bottom: 5px;">${parseInlineMarkdown(escapeHtml(content))}</li>`);
+                    } else {
+                        if (inList) {
+                            result.push('</ul>');
+                            inList = false;
+                        }
+                        
+                        if (line === '') {
+                            result.push('<div style="height: 12px;"></div>');
+                        } else {
+                            result.push(`<p style="margin-bottom: 12px; line-height: 1.7;">${parseInlineMarkdown(escapeHtml(line))}</p>`);
+                        }
+                    }
+                }
+                
+                if (inList) {
+                    result.push('</ul>');
+                }
+
+                return result.join('\n');
+            }
+
+            function parseInlineMarkdown(text) {
+                // 處理粗體 **text**
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                // 處理斜體 *text*
+                text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                // 處理行內 code `code`
+                text = text.replace(/`(.*?)`/g, '<code>$1</code>');
+                // 處理超連結 [text](url)
+                text = text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+                return text;
+            }
+
+            function escapeHtml(string) {
+                return String(string).replace(/[&<>"']/g, function (s) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;'
+                    }[s];
+                });
+            }
+        });
+    </script>
+</body>
+</html>
