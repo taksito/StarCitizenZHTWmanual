@@ -166,117 +166,6 @@
             color: var(--text-main);
         }
 
-        /* Editor Modal/Panel */
-        .editor-panel {
-            margin-bottom: 30px;
-            padding: 30px;
-            border: 1px dashed var(--primary);
-            display: none;
-        }
-
-        .editor-panel.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        .form-control {
-            width: 100%;
-            background: rgba(5, 11, 20, 0.8);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 12px 15px;
-            border-radius: 8px;
-            outline: none;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 150px;
-        }
-
-        .editor-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .editor-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Markdown Help */
-        .md-help {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 5px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .md-help span {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* Delete Button */
-        .delete-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #ef4444;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.8rem;
-            display: none;
-        }
-
-        .delete-btn:hover {
-            background: #ef4444;
-            color: #fff;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
-        }
-
-        body.manage-active .delete-btn {
-            display: block;
-        }
-
-        /* Export block */
-        .export-section {
-            margin-top: 20px;
-            background: rgba(5, 11, 20, 0.9);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 15px;
-        }
-
         /* Keyframes */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
@@ -290,16 +179,6 @@
             border: 1px dashed var(--glass-border);
             border-radius: 12px;
         }
-
-        .live-preview {
-            border: 1px solid rgba(56, 189, 248, 0.1);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            max-height: 250px;
-            overflow-y: auto;
-        }
     </style>
 </head>
 <body>
@@ -309,85 +188,11 @@
             <a href="index.html" style="color: var(--accent); display: flex; align-items: center; gap: 8px;">
                 <span>←</span> 返回首頁
             </a>
-            <button id="toggle-manage-btn" class="btn" style="background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 8px 16px; font-size: 0.85rem;">
-                ⚙️ 開發者管理模式
-            </button>
         </div>
 
         <section class="hero glass-panel blog-header">
             <h1><span class="text-gradient">塔克 Blog</span></h1>
             <p>在這裡記錄網站的更新狀態、日誌心得以及星際公民遊戲中的冒險點滴。</p>
-        </section>
-
-        <!-- Management Panel -->
-        <section id="editor-panel" class="glass-panel editor-panel">
-            <h2 class="text-gradient" style="font-size: 1.5rem; margin-bottom: 20px;">📝 撰寫新文章</h2>
-            
-            <div id="editor-info-banner" style="background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; color: var(--text-main);">
-                💡 <strong>提示：</strong> 這是一個本機發布面板。您在此處發布的文章將會暫存於瀏覽器的 <code>localStorage</code> 中。
-                若要永久發布至伺服器，請填寫好內容並點擊下方<strong>「匯出代碼」</strong>，然後將代碼貼入本 HTML 檔案中。
-            </div>
-
-            <form id="post-form">
-                <div class="form-group">
-                    <label class="form-label" for="post-title">文章標題</label>
-                    <input type="text" id="post-title" class="form-control" placeholder="請輸入文章標題..." required>
-                </div>
-
-                <div class="editor-row">
-                    <div class="form-group">
-                        <label class="form-label" for="post-category">文章分類</label>
-                        <select id="post-category" class="form-control">
-                            <option value="update">📢 網站更新</option>
-                            <option value="mind">💡 心得隨筆</option>
-                            <option value="game">🎮 遊戲日常</option>
-                            <option value="bug">🛠️ Bug 修復</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="post-date">發布日期</label>
-                        <input type="date" id="post-date" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="post-content">文章內容 (支援 Markdown 格式)</label>
-                    <textarea id="post-content" class="form-control" placeholder="輸入內容..." required></textarea>
-                    <div class="md-help">
-                        <span>粗體：**文字**</span>
-                        <span>斜體：*文字*</span>
-                        <span>連結：[連結名稱](URL)</span>
-                        <span>程式碼：`code`</span>
-                        <span>列表：- 項目</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">內容即時預覽</label>
-                    <div id="preview-area" class="live-preview post-content">
-                        <span style="color: var(--text-muted); font-style: italic;">請在上方輸入內容以預覽...</span>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 15px; margin-top: 25px;">
-                    <button type="submit" class="btn">🚀 發布文章</button>
-                    <button type="button" id="export-btn" class="btn" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-main);">
-                        💾 匯出代碼
-                    </button>
-                    <button type="button" id="clear-cache-btn" class="btn" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.4); color: #ef4444; margin-left: auto;">
-                        🗑️ 清除暫存
-                    </button>
-                </div>
-            </form>
-
-            <div id="export-wrapper" class="export-section" style="display: none; margin-top: 20px;">
-                <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">複製下方代碼</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
-                    請將以下 JavaScript 代碼區塊完整複製，並覆蓋 `blog.html` 中約第 390 行開始的 <code>STATIC_POSTS</code> 變數，即可永久保存！
-                </p>
-                <textarea id="export-code" class="form-control" style="font-family: monospace; font-size: 0.85rem; min-height: 150px; background: #020617; border-color: var(--primary);" readonly></textarea>
-                <button id="copy-code-btn" class="btn" style="margin-top: 10px; padding: 6px 15px; font-size: 0.8rem;">📋 複製到剪貼簿</button>
-            </div>
         </section>
 
         <!-- Filters and Search -->
@@ -414,8 +219,15 @@
 
     <script src="components.js"></script>
     <script>
-        // --- 靜態文章資料區 ---
-        // 當您在此頁面中新增/修改並匯出代碼後，請將產生的陣列貼在下方覆蓋 STATIC_POSTS
+        // ==========================================================
+        // 📝 文章資料區 — 直接在此處新增、修改、刪除文章
+        // 欄位說明：
+        //   id       : 唯一識別碼（任意字串，不可重複）
+        //   title    : 文章標題
+        //   date     : 發布日期 "YYYY-MM-DD"
+        //   category : "update" | "mind" | "game" | "bug"
+        //   content  : 內文（支援簡易 Markdown：**粗體** *斜體* `code` [連結](url) - 清單）
+        // ==========================================================
         const STATIC_POSTS = [
             {
                 id: "static-1",
@@ -435,123 +247,9 @@
 
         // --- 部落格核心 Logic ---
         document.addEventListener('DOMContentLoaded', () => {
-            // 設定今日日期為預設值
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('post-date').value = today;
-
-            // 讀取本地儲存的文章 (localStorage)
-            let localPosts = [];
-            try {
-                const stored = localStorage.getItem('taku_blog_posts');
-                if (stored) {
-                    localPosts = JSON.parse(stored);
-                }
-            } catch (e) {
-                console.error("無法讀取 LocalStorage", e);
-            }
-
-            // 合併文章並依日期降序排列
-            let allPosts = [...localPosts, ...STATIC_POSTS];
+            let allPosts = [...STATIC_POSTS];
             sortPosts();
-
-            // 渲染文章
             renderPosts();
-
-            // 編輯模式切換
-            const toggleManageBtn = document.getElementById('toggle-manage-btn');
-            const editorPanel = document.getElementById('editor-panel');
-            toggleManageBtn.addEventListener('click', () => {
-                const isActive = editorPanel.classList.toggle('active');
-                document.body.classList.toggle('manage-active');
-                if (isActive) {
-                    toggleManageBtn.textContent = '👁️ 關閉管理模式';
-                    updateExportCode();
-                } else {
-                    toggleManageBtn.textContent = '⚙️ 開發者管理模式';
-                }
-            });
-
-            // 即時預覽功能
-            const contentTextarea = document.getElementById('post-content');
-            const previewArea = document.getElementById('preview-area');
-            contentTextarea.addEventListener('input', () => {
-                const val = contentTextarea.value;
-                if (!val) {
-                    previewArea.innerHTML = '<span style="color: var(--text-muted); font-style: italic;">請在上方輸入內容以預覽...</span>';
-                } else {
-                    previewArea.innerHTML = parseMarkdown(val);
-                }
-            });
-
-            // 發布文章
-            const postForm = document.getElementById('post-form');
-            postForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const title = document.getElementById('post-title').value.trim();
-                const category = document.getElementById('post-category').value;
-                const date = document.getElementById('post-date').value;
-                const content = document.getElementById('post-content').value;
-
-                if (!title || !content) return;
-
-                const newPost = {
-                    id: 'local-' + Date.now(),
-                    title,
-                    category,
-                    date,
-                    content
-                };
-
-                localPosts.unshift(newPost);
-                saveLocalPosts();
-                
-                // 重設表單
-                document.getElementById('post-title').value = '';
-                document.getElementById('post-content').value = '';
-                document.getElementById('post-date').value = today;
-                previewArea.innerHTML = '<span style="color: var(--text-muted); font-style: italic;">請在上方輸入內容以預覽...</span>';
-
-                // 更新合併列表並渲染
-                allPosts = [...localPosts, ...STATIC_POSTS];
-                sortPosts();
-                renderPosts();
-                updateExportCode();
-                
-                alert('文章已暫存！如需永久儲存，請點擊「匯出代碼」並將代碼貼入 blog.html 檔案中。');
-            });
-
-            // 匯出代碼按鈕
-            const exportBtn = document.getElementById('export-btn');
-            const exportWrapper = document.getElementById('export-wrapper');
-            exportBtn.addEventListener('click', () => {
-                const isVisible = exportWrapper.style.display === 'block';
-                exportWrapper.style.display = isVisible ? 'none' : 'block';
-                if (!isVisible) {
-                    updateExportCode();
-                    exportWrapper.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-
-            // 複製代碼按鈕
-            const copyCodeBtn = document.getElementById('copy-code-btn');
-            copyCodeBtn.addEventListener('click', () => {
-                const codeArea = document.getElementById('export-code');
-                codeArea.select();
-                document.execCommand('copy');
-                alert('代碼已複製到剪貼簿！');
-            });
-
-            // 清除暫存按鈕
-            const clearCacheBtn = document.getElementById('clear-cache-btn');
-            clearCacheBtn.addEventListener('click', () => {
-                if (confirm('確定要清除所有在瀏覽器中暫存的文章嗎？（這不會影響寫死在程式碼中的靜態文章）')) {
-                    localStorage.removeItem('taku_blog_posts');
-                    localPosts = [];
-                    allPosts = [...STATIC_POSTS];
-                    renderPosts();
-                    updateExportCode();
-                }
-            });
 
             // 搜尋與篩選功能
             const searchInput = document.getElementById('search-input');
@@ -566,56 +264,9 @@
                 });
             });
 
-            // 刪除文章事件委派 (管理模式下)
-            const postListContainer = document.getElementById('post-list');
-            postListContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('delete-btn')) {
-                    const postId = e.target.getAttribute('data-id');
-                    if (postId.startsWith('static-')) {
-                        alert('這篇文章是寫死在程式碼中的靜態文章，無法直接刪除。若要刪除，請直接編輯 blog.html 檔案刪除對應的 STATIC_POSTS 項目。');
-                        return;
-                    }
-                    if (confirm('確定要刪除這篇暫存文章嗎？')) {
-                        localPosts = localPosts.filter(p => p.id !== postId);
-                        saveLocalPosts();
-                        allPosts = [...localPosts, ...STATIC_POSTS];
-                        sortPosts();
-                        renderPosts();
-                        updateExportCode();
-                    }
-                }
-            });
-
             // --- 輔助函式 ---
             function sortPosts() {
                 allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-            }
-
-            function saveLocalPosts() {
-                try {
-                    localStorage.setItem('taku_blog_posts', JSON.stringify(localPosts));
-                } catch (e) {
-                    console.error("無法寫入 LocalStorage", e);
-                }
-            }
-
-            function updateExportCode() {
-                const codeArea = document.getElementById('export-code');
-                // 將所有文章格式化輸出 (包含 static 與 local)
-                // 為了讓使用者直接替換，我們匯出整個 STATIC_POSTS
-                const exportArray = allPosts.map(p => {
-                    // 將 id 轉換，避免 local- 開頭的 id 重複或混淆，我們可以重新為所有文章編排 id
-                    const cleanId = p.id.startsWith('static-') ? p.id : 'static-' + Math.random().toString(36).substr(2, 9);
-                    return {
-                        id: cleanId,
-                        title: p.title,
-                        date: p.date,
-                        category: p.category,
-                        content: p.content
-                    };
-                });
-
-                codeArea.value = JSON.stringify(exportArray, null, 4);
             }
 
             function filterAndRender() {
@@ -645,7 +296,7 @@
                 if (postsToRender.length === 0) {
                     container.innerHTML = `
                         <div class="no-posts">
-                            <p>🔍 找不到相符的文章。快來寫點心得吧！</p>
+                            <p>🔍 找不到相符的文章。</p>
                         </div>
                     `;
                     return;
@@ -666,7 +317,6 @@
                     const formattedContent = parseMarkdown(post.content);
 
                     card.innerHTML = `
-                        <button class="delete-btn" data-id="${post.id}">🗑️ 刪除</button>
                         <div class="post-meta">
                             <span class="post-category-badge ${badgeClass}">${catNames[post.category] || post.category}</span>
                             <time datetime="${post.date}">📅 ${post.date}</time>
@@ -691,7 +341,6 @@
                 for (let i = 0; i < lines.length; i++) {
                     let line = lines[i].trim();
 
-                    // Check for list item
                     if (line.startsWith('- ')) {
                         if (!inList) {
                             result.push('<ul style="margin-left: 20px; margin-bottom: 15px; list-style-type: disc;">');
