@@ -46,6 +46,16 @@ class ComponentManager {
                     </li>
                     <li class="has-submenu">
                         <div class="submenu-header" onclick="ComponentManager.toggleSubmenu(this)">
+                            <a href="${prefix}advanced.html" onclick="event.stopPropagation()">⚙️ 進階說明</a>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <ul class="submenu">
+                            <li><a href="${prefix}insurance.html">• 🛡️ 保險配置</a></li>
+                            <li><a href="${prefix}ship-components.html">• ⚙️ 飛機組件</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu">
+                        <div class="submenu-header" onclick="ComponentManager.toggleSubmenu(this)">
                             <a href="${prefix}professions.html" onclick="event.stopPropagation()">💼 專業領域</a>
                             <span class="toggle-icon">▼</span>
                         </div>
@@ -54,6 +64,7 @@ class ComponentManager {
                             <li><a href="${prefix}mining.html">• ⛏️ 挖礦教學</a></li>
                             <li><a href="${prefix}ground-combat.html">• 🔫 地面 FPS</a></li>
                             <li><a href="${prefix}ship-combat.html">• ⚔️ 飛船戰鬥</a></li>
+                            <li><a href="${prefix}refueling.html">• ⛽ 加油任務</a></li>
                         </ul>
                     </li>
                     <li class="has-submenu">
@@ -95,9 +106,9 @@ class ComponentManager {
                         </div>
                         <ul class="submenu">
                             <li><a href="${prefix}update48/index.html">• 4.8 改版首頁</a></li>
-                            <li><a href="${prefix}update48/ptu-48-tactical.html">• 4.8 戰術打擊群</a></li>
                         </ul>
                     </li>
+                    <li><a href="${prefix}update48/ptu-48-tactical.html">⚔️ 4.8 戰術打擊群</a></li>
                     <li><a href="${prefix}rockbreaker/rock-breaker.html">⛏️ 4.7 碎石機啟動</a></li>
                 </ul>
             </nav>
